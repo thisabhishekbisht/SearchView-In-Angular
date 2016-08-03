@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+	<html ng-app="myApp">
+		<head>
+			
+			<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+			<script src="https://code.angularjs.org/1.5.6/angular-route.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.js"></script>
+			<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+			<style>
+						h1{
+			font-family:vardana;
+			color:Red;
+			}
+					#table tr:nth-child(odd) {
+					  background-color: #f1f1f1;
+					}
+					#table tr:nth-child(even) {
+					  background-color: #ffffff;
+					}
+
+					#table {
+						border-collapse: collapse;
+						width: 100%;
+					}
+
+					#table th, td {
+						padding: 8px;
+						text-align: left;
+						border: 1px solid #ddd;;
+					}
+						table#table {
+						border-collapse: collapse;   
+					}
+					#table tr {
+						background-color: #eee;
+						border-top: 1px solid #fff;
+					}
+
+					#table tr:hover {
+						background-color: #ccc;
+					}
+					#table th {
+						background-color: #fff;
+					}
+					#table td:hover {
+						cursor: pointer;
+					}	
+
+					
+			</style>
+			</head>
+			
+		<body bgcolor="gray">
+
+			<div ng-controller="myCtrl">
+			<center><marquee direction="right" bg-color="Yellow"><h1>Data Module!</h1></marquee></center>
+			
+			<button ng-click="myFunction()">GET DATA FROM SERVER!</button>
+			<input type="text" placeholder="Search" ng-model="searchValue"/>
+			<button ng-click="getResultBasedOnName()"><i class="fa fa-search" aria-hidden="true"></i></button>
+			<hr style="border: 1px solid black; bgcolor="red" padding:2px;"/>
+			<table id="table">
+				  <tr>				
+					<th><center>KIND</center></th>
+					<th><center>TOTALITEMS</center></th>
+					<th><center>PUBLISHER</center></th>				
+					<th><center>PUBLISHEDDATE</center></th>
+					<th><center>DESCRIPTION</center></th>
+					
+				  </tr>
+				  <tbody>
+						<tr data-ng-repeat="x in myData" ng-click="newFunction(x)" ng-if="!isBasedOnSearch">
+						  <td>{{x.kind}}</td>
+						  <td>{{x.totalItems}}</td>
+						   <td>{{x.volumeInfo.publisher}}</td>
+						    <td>{{x.volumeInfo.publishedDate}}</td>
+							 <td>{{x.volumeInfo.description}}</td>
+						  
+				        </tr>
+						<tr data-ng-repeat="x in mappedResult" ng-click="newFunction(x)" ng-if="isBasedOnSearch">
+						  <td>{{x.kind}}</td>
+						  <td>{{x.totalItems}}</td>
+						   <td>{{x.volumeInfo.publisher}}</td>
+						    <td>{{x.volumeInfo.publishedDate}}</td>
+							 <td>{{x.volumeInfo.description}}</td>
+				        </tr>
+				  </tbody>
+
+				</table>
+			
+			<script>
+			var app = angular.module('myApp', ['ngStorage']);
+				app.controller('myCtrl', function($scope, $http ,$location ,$filter,$localStorage,$window) {
+					$scope.count = 0;
+					$scope.isBasedOnSearch = false;
+					$scope.myFunction = function() 
+					{
+						$http.get("https://www.googleapis.com/books/v1/volumes/?q=sherlock").then(function(response) {
+							 $scope.myData = response.data.items;;
+						});
+					}
+					
+					$scope.getResultBasedOnName = function(){
+					$scope.isBasedOnSearch = true;
+					$http.get("https://www.googleapis.com/books/v1/volumes/?q="+$scope.searchValue).then(function(response) {
+							 $scope.mappedResult = response.data.items;;
+						
+						});
+					}
+	
+    });
+	
+	
+				
+			</script>
+		</body>
+	</html>
